@@ -1,0 +1,60 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-paper text-ink font-body antialiased;
+  }
+  h1, h2, h3 {
+    @apply font-display;
+  }
+}
+
+/* Signature element: the ticket-stub card. Two notches "punched" from the
+   left/right edges and a dashed perforation separate the info side from the
+   stub side, like a torn admission ticket. */
+.ticket {
+  position: relative;
+  background: #fff;
+  border: 1px solid #1B1F3B1f;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.ticket::before,
+.ticket::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  width: 18px;
+  height: 18px;
+  background: #FAF6EF;
+  border: 1px solid #1B1F3B1f;
+  border-radius: 999px;
+  transform: translateY(-50%);
+  z-index: 2;
+}
+
+.ticket::before {
+  left: -9px;
+}
+
+.ticket::after {
+  right: -9px;
+}
+
+.ticket-stub-divider {
+  background-image: repeating-linear-gradient(
+    to bottom,
+    transparent 0 6px,
+    #1b1f3b40 6px 9px
+  );
+  width: 1px;
+}
+
+.stamp {
+  font-family: var(--font-mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
