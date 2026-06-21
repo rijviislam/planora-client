@@ -22,7 +22,9 @@ export default function MyEventsPage() {
     setLoading(true);
     setError("");
     try {
-      const { data } = await api.get("/events/mine");
+      const { data } = await api.get(
+        `${process.env.NEXT_PUBLIC_API_URL}/events/mine`,
+      );
       setEvents(data.data);
     } catch (err) {
       setError(
@@ -58,7 +60,7 @@ export default function MyEventsPage() {
     if (!confirm("Delete this event? This cannot be undone.")) return;
     setDeletingId(id);
     try {
-      await api.delete(`/events/${id}`);
+      await api.delete(`${process.env.NEXT_PUBLIC_API_URL}/events/${id}`);
       await load();
     } catch (err) {
       setError(err.response?.data?.message || "Couldn't delete this event.");

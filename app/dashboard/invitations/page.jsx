@@ -1,8 +1,13 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import {
+  EmptyState,
+  ErrorBanner,
+  Loading,
+  SuccessBanner,
+} from "@/components/ui/Status";
 import api from "@/lib/api";
-import { Loading, ErrorBanner, SuccessBanner, EmptyState } from "@/components/ui/Status";
+import { useEffect, useState } from "react";
 
 export default function InvitationsPage() {
   const [invitations, setInvitations] = useState([]);
@@ -15,10 +20,14 @@ export default function InvitationsPage() {
     setLoading(true);
     setError("");
     try {
-      const { data } = await api.get("/invitations/mine");
+      const { data } = await api.get(
+        `${process.env.NEXT_PUBLIC_API_URL}/invitations/mine`,
+      );
       setInvitations(data.data);
     } catch (err) {
-      setError(err.response?.data?.message || "Couldn't load your invitations.");
+      setError(
+        err.response?.data?.message || "Couldn't load your invitations.",
+      );
     } finally {
       setLoading(false);
     }
@@ -34,18 +43,25 @@ export default function InvitationsPage() {
     setSuccess("");
     try {
       if (Number(invitation.event.fee) > 0) {
-        const { data } = await api.post("/payments/init", {
-          eventId: invitation.eventId,
-          invitationId: invitation.id,
-        });
+        const { data } = await api.post(
+          `${process.env.NEXT_PUBLIC_API_URL}/payments/init`,
+          {
+            eventId: invitation.eventId,
+            invitationId: invitation.id,
+          },
+        );
         window.location.href = data.data.paymentUrl;
         return;
       }
-      await api.patch(`/invitations/${invitation.id}/accept`);
+      await api.patch(
+        `${process.env.NEXT_PUBLIC_API_URL}/invitations/${invitation.id}/accept`,
+      );
       setSuccess("Invitation accepted!");
       await load();
     } catch (err) {
-      setError(err.response?.data?.message || "Couldn't accept this invitation.");
+      setError(
+        err.response?.data?.message || "Couldn't accept this invitation.",
+      );
     } finally {
       setActingId(null);
     }
@@ -56,10 +72,14 @@ export default function InvitationsPage() {
     setError("");
     setSuccess("");
     try {
-      await api.patch(`/invitations/${id}/decline`);
+      await api.patch(
+        `${process.env.NEXT_PUBLIC_API_URL}/invitations/${id}/decline`,
+      );
       await load();
     } catch (err) {
-      setError(err.response?.data?.message || "Couldn't decline this invitation.");
+      setError(
+        err.response?.data?.message || "Couldn't decline this invitation.",
+      );
     } finally {
       setActingId(null);
     }
@@ -68,7 +88,9 @@ export default function InvitationsPage() {
   return (
     <div>
       <p className="stamp text-xs text-coral">Invitations</p>
-      <h1 className="mt-1 font-display text-3xl font-semibold text-ink">Pending invitations</h1>
+      <h1 className="mt-1 font-display text-3xl font-semibold text-ink">
+        Pending invitations
+      </h1>
 
       <div className="mt-8 space-y-3">
         <ErrorBanner message={error} />
@@ -77,7 +99,10 @@ export default function InvitationsPage() {
         {loading ? (
           <Loading />
         ) : invitations.length === 0 ? (
-          <EmptyState title="No pending invitations" hint="Invitations hosts send you will show up here." />
+          <EmptyState
+            title="No pending invitations"
+            hint="Invitations hosts send you will show up here."
+          />
         ) : (
           invitations
             .filter((i) => i.status === "PENDING")
@@ -87,14 +112,17 @@ export default function InvitationsPage() {
                 className="flex flex-wrap items-center justify-between gap-3 rounded-ticket border border-ink/10 bg-white p-5"
               >
                 <div>
-                  <p className="font-display text-lg font-semibold text-ink">{inv.event.title}</p>
+                  <p className="font-display text-lg font-semibold text-ink">
+                    {inv.event.title}
+                  </p>
                   <p className="mt-1 text-sm text-ink-soft">
                     Invited by {inv.invitedBy?.name} ·{" "}
                     {new Date(inv.event.date).toLocaleDateString("en-US", {
                       month: "short",
                       day: "numeric",
                     })}{" "}
-                    · {Number(inv.event.fee) === 0 ? "Free" : `৳${inv.event.fee}`}
+                    ·{" "}
+                    {Number(inv.event.fee) === 0 ? "Free" : `৳${inv.event.fee}`}
                   </p>
                 </div>
                 <div className="flex gap-2">

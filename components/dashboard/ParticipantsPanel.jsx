@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { EmptyState, ErrorBanner, Loading } from "@/components/ui/Status";
 import api from "@/lib/api";
-import { Loading, ErrorBanner, EmptyState } from "@/components/ui/Status";
+import { useEffect, useState } from "react";
 
 const statusStyles = {
   PENDING: "bg-gold/15 text-gold",
@@ -21,7 +21,9 @@ export default function ParticipantsPanel({ eventId }) {
     setLoading(true);
     setError("");
     try {
-      const { data } = await api.get(`/participations/event/${eventId}`);
+      const { data } = await api.get(
+        `${process.env.NEXT_PUBLIC_API_URL}/participations/event/${eventId}`,
+      );
       setParticipants(data.data);
     } catch (err) {
       setError(err.response?.data?.message || "Couldn't load participants.");
@@ -38,10 +40,14 @@ export default function ParticipantsPanel({ eventId }) {
   async function act(id, action) {
     setActingId(id);
     try {
-      await api.patch(`/participations/${id}/${action}`);
+      await api.patch(
+        `${process.env.NEXT_PUBLIC_API_URL}/participations/${id}/${action}`,
+      );
       await load();
     } catch (err) {
-      setError(err.response?.data?.message || "Action failed. Please try again.");
+      setError(
+        err.response?.data?.message || "Action failed. Please try again.",
+      );
     } finally {
       setActingId(null);
     }
@@ -53,7 +59,10 @@ export default function ParticipantsPanel({ eventId }) {
     <div className="space-y-3">
       <ErrorBanner message={error} />
       {participants.length === 0 ? (
-        <EmptyState title="No participants yet" hint="Approved and pending requests will show up here." />
+        <EmptyState
+          title="No participants yet"
+          hint="Approved and pending requests will show up here."
+        />
       ) : (
         participants.map((p) => (
           <div
@@ -65,7 +74,9 @@ export default function ParticipantsPanel({ eventId }) {
               <p className="text-xs text-ink-soft">{p.user.email}</p>
             </div>
             <div className="flex items-center gap-2">
-              <span className={`stamp rounded-full px-2.5 py-1 text-[10px] font-semibold ${statusStyles[p.status]}`}>
+              <span
+                className={`stamp rounded-full px-2.5 py-1 text-[10px] font-semibold ${statusStyles[p.status]}`}
+              >
                 {p.status}
               </span>
               {p.status === "PENDING" && (

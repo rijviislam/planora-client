@@ -22,7 +22,10 @@ export default function InvitePanel({ eventId }) {
 
     setSending(true);
     try {
-      await api.post("/invitations", { eventId, invitedEmail: email });
+      await api.post(`${process.env.NEXT_PUBLIC_API_URL}/invitations`, {
+        eventId,
+        invitedEmail: email,
+      });
       setSuccess(`Invitation sent to ${email}`);
       setEmail("");
     } catch (err) {
