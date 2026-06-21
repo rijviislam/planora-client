@@ -232,7 +232,7 @@ export default function EventDetailsPage() {
                   You're hosting this
                 </p>
                 <Link
-                  href="/dashboard/my-events"
+                  href={`${process.env.NEXT_PUBLIC_API_URL}/dashboard/my-events`}
                   className="stamp w-full rounded-full bg-ink px-4 py-2.5 text-[10px] font-semibold text-paper"
                 >
                   Manage event
