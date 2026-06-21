@@ -24,7 +24,10 @@ export default function EventsSlider({ events = [] }) {
               Upcoming events
             </h2>
           </div>
-          <Link href="/events" className="hidden text-sm font-medium text-ink-soft hover:text-ink md:block">
+          <Link
+            href="/events"
+            className="hidden text-sm font-medium text-ink-soft hover:text-ink md:block"
+          >
             View all →
           </Link>
         </div>
@@ -38,13 +41,16 @@ export default function EventsSlider({ events = [] }) {
             return (
               <Link
                 key={event.id}
-                href={`/events/${event.id}`}
+                href={`${process.env.NEXT_PUBLIC_API_URL}/events/${event.id}`}
                 className="ticket flex w-72 shrink-0 flex-col"
               >
                 <div className="flex-1 p-5">
                   <div className="flex items-start justify-between gap-2">
                     <p className="stamp text-[10px] text-ink-soft">
-                      {date.toLocaleDateString("en-US", { month: "short", day: "numeric" })}
+                      {date.toLocaleDateString("en-US", {
+                        month: "short",
+                        day: "numeric",
+                      })}
                     </p>
                     <FeeBadge fee={event.fee} />
                   </div>
@@ -57,8 +63,12 @@ export default function EventsSlider({ events = [] }) {
                 </div>
                 <div className="ticket-stub-divider mx-5" />
                 <div className="flex items-center justify-between px-5 py-3">
-                  <span className="stamp text-[10px] text-ink-soft">Admit one</span>
-                  <span className="text-sm font-medium text-coral">Details →</span>
+                  <span className="stamp text-[10px] text-ink-soft">
+                    Admit one
+                  </span>
+                  <span className="text-sm font-medium text-coral">
+                    Details →
+                  </span>
                 </div>
               </Link>
             );

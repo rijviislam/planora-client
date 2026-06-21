@@ -54,7 +54,9 @@ export default function EventsPage() {
     const { visibility, feeType } = categories.find((c) => c.key === category);
 
     api
-      .get("/events", { params: { search, visibility, feeType, limit: 12 } })
+      .get(`${process.env.NEXT_PUBLIC_API_URL}/events`, {
+        params: { search, visibility, feeType, limit: 12 },
+      })
       .then(({ data }) => {
         if (active) setEvents(data.data);
       })
