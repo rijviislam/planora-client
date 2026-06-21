@@ -1,12 +1,12 @@
 "use client";
 
-import { useState } from "react";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
-import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import FormField from "@/components/FormField";
+import Navbar from "@/components/Navbar";
 import api from "@/lib/api";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -18,7 +18,8 @@ export default function LoginPage() {
   function validate() {
     const next = {};
     if (!form.email) next.email = "Email is required";
-    else if (!/^\S+@\S+\.\S+$/.test(form.email)) next.email = "Enter a valid email";
+    else if (!/^\S+@\S+\.\S+$/.test(form.email))
+      next.email = "Enter a valid email";
     if (!form.password) next.password = "Password is required";
     setErrors(next);
     return Object.keys(next).length === 0;
@@ -31,13 +32,17 @@ export default function LoginPage() {
 
     setLoading(true);
     try {
-      const { data } = await api.post("/auth/login", form);
+      const { data } = await api.post(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/auth/login`,
+        form,
+      );
       localStorage.setItem("planora_token", data.data.token);
       localStorage.setItem("planora_user", JSON.stringify(data.data.user));
       router.push("/dashboard");
     } catch (err) {
       setServerError(
-        err.response?.data?.message || "Something went wrong. Please try again."
+        err.response?.data?.message ||
+          "Something went wrong. Please try again.",
       );
     } finally {
       setLoading(false);
@@ -49,7 +54,9 @@ export default function LoginPage() {
       <Navbar />
       <main className="mx-auto flex min-h-[70vh] max-w-md flex-col justify-center px-5 py-16 md:px-0">
         <p className="stamp text-xs text-coral">Welcome back</p>
-        <h1 className="mt-2 font-display text-3xl font-semibold text-ink">Log in</h1>
+        <h1 className="mt-2 font-display text-3xl font-semibold text-ink">
+          Log in
+        </h1>
         <p className="mt-2 text-sm text-ink-soft">
           Collect the tickets waiting in your dashboard.
         </p>
@@ -87,7 +94,10 @@ export default function LoginPage() {
 
         <p className="mt-6 text-center text-sm text-ink-soft">
           New to Planora?{" "}
-          <Link href="/signup" className="font-medium text-ink hover:text-coral">
+          <Link
+            href="/signup"
+            className="font-medium text-ink hover:text-coral"
+          >
             Create an account
           </Link>
         </p>
