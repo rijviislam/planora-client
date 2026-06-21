@@ -24,9 +24,7 @@ export default function AdminEventsPage() {
     setLoading(true);
     setError("");
     try {
-      const { data } = await api.get(
-        `${process.env.NEXT_PUBLIC_API_URL}/users/admin/events`,
-      );
+      const { data } = await api.get("/users/admin/events");
       setEvents(data.data);
     } catch (err) {
       setError(err.response?.data?.message || "Couldn't load events.");
@@ -47,13 +45,28 @@ export default function AdminEventsPage() {
     setError("");
     setSuccess("");
     try {
-      await api.delete(
-        `${process.env.NEXT_PUBLIC_API_URL}/users/admin/events/${id}`,
-      );
+      await api.delete(`/users/admin/events/${id}`);
       setSuccess("Event removed");
       await load();
     } catch (err) {
       setError(err.response?.data?.message || "Couldn't remove this event.");
+    } finally {
+      setBusyId(null);
+    }
+  }
+
+  async function handleToggleFeature(id) {
+    setBusyId(id);
+    setError("");
+    setSuccess("");
+    try {
+      const { data } = await api.patch(`/users/admin/events/${id}/feature`);
+      setSuccess(data.message);
+      await load();
+    } catch (err) {
+      setError(
+        err.response?.data?.message || "Couldn't update featured status.",
+      );
     } finally {
       setBusyId(null);
     }
@@ -83,25 +96,41 @@ export default function AdminEventsPage() {
               className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-ink/10 bg-white px-4 py-3"
             >
               <div>
-                <Link
-                  href={`${process.env.NEXT_PUBLIC_API_URL}/events/${event.id}`}
-                  className="text-sm font-medium text-ink hover:text-coral"
-                >
-                  {event.title}
-                </Link>
+                <div className="flex items-center gap-2">
+                  <Link
+                    href={`/events/${event.id}`}
+                    className="text-sm font-medium text-ink hover:text-coral"
+                  >
+                    {event.title}
+                  </Link>
+                  {event.isFeatured && (
+                    <span className="stamp rounded-full bg-gold/15 px-2 py-0.5 text-[10px] font-semibold text-gold">
+                      Featured
+                    </span>
+                  )}
+                </div>
                 <p className="text-xs text-ink-soft">
                   {event.visibility} ·{" "}
                   {Number(event.fee) === 0 ? "Free" : `৳${event.fee}`} · hosted
                   by {event.owner?.name} ({event.owner?.email})
                 </p>
               </div>
-              <button
-                disabled={busyId === event.id}
-                onClick={() => handleDelete(event.id)}
-                className="rounded-full border border-coral/30 px-3 py-1.5 text-xs font-medium text-coral transition hover:bg-coral/10 disabled:opacity-60"
-              >
-                {busyId === event.id ? "Removing…" : "Remove"}
-              </button>
+              <div className="flex gap-2">
+                <button
+                  disabled={busyId === event.id}
+                  onClick={() => handleToggleFeature(event.id)}
+                  className="rounded-full border border-ink/15 px-3 py-1.5 text-xs font-medium text-ink-soft transition hover:border-ink hover:text-ink disabled:opacity-60"
+                >
+                  {event.isFeatured ? "Unfeature" : "Feature"}
+                </button>
+                <button
+                  disabled={busyId === event.id}
+                  onClick={() => handleDelete(event.id)}
+                  className="rounded-full border border-coral/30 px-3 py-1.5 text-xs font-medium text-coral transition hover:bg-coral/10 disabled:opacity-60"
+                >
+                  {busyId === event.id ? "Removing…" : "Remove"}
+                </button>
+              </div>
             </div>
           ))
         )}
