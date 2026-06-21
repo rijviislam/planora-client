@@ -1,9 +1,14 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import {
+  EmptyState,
+  ErrorBanner,
+  Loading,
+  SuccessBanner,
+} from "@/components/ui/Status";
 import api from "@/lib/api";
 import { useAdminGuard } from "@/lib/useAdminGuard";
-import { Loading, ErrorBanner, SuccessBanner, EmptyState } from "@/components/ui/Status";
+import { useEffect, useState } from "react";
 
 export default function AdminUsersPage() {
   const { loading: guardLoading } = useAdminGuard();
@@ -18,7 +23,9 @@ export default function AdminUsersPage() {
     setLoading(true);
     setError("");
     try {
-      const { data } = await api.get("/users");
+      const { data } = await api.get(
+        `${process.env.NEXT_PUBLIC_API_URL}/users`,
+      );
       setUsers(data.data);
     } catch (err) {
       setError(err.response?.data?.message || "Couldn't load users.");
@@ -33,12 +40,13 @@ export default function AdminUsersPage() {
   }, [guardLoading]);
 
   async function handleBan(id) {
-    if (!confirm("Ban this user? They will no longer be able to log in.")) return;
+    if (!confirm("Ban this user? They will no longer be able to log in."))
+      return;
     setBusyId(id);
     setError("");
     setSuccess("");
     try {
-      await api.patch(`/users/${id}/ban`);
+      await api.patch(`${process.env.NEXT_PUBLIC_API_URL}/users/${id}/ban`);
       setSuccess("User banned");
       await load();
     } catch (err) {
@@ -49,12 +57,13 @@ export default function AdminUsersPage() {
   }
 
   async function handleDelete(id) {
-    if (!confirm("Permanently delete this account? This cannot be undone.")) return;
+    if (!confirm("Permanently delete this account? This cannot be undone."))
+      return;
     setBusyId(id);
     setError("");
     setSuccess("");
     try {
-      await api.delete(`/users/${id}`);
+      await api.delete(`${process.env.NEXT_PUBLIC_API_URL}/users/${id}`);
       setSuccess("User account deleted");
       await load();
     } catch (err) {
@@ -69,7 +78,9 @@ export default function AdminUsersPage() {
   return (
     <div>
       <p className="stamp text-xs text-coral">Admin</p>
-      <h1 className="mt-1 font-display text-3xl font-semibold text-ink">Manage users</h1>
+      <h1 className="mt-1 font-display text-3xl font-semibold text-ink">
+        Manage users
+      </h1>
 
       <div className="mt-8 space-y-3">
         <ErrorBanner message={error} />

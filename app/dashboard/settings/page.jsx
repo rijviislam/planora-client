@@ -1,10 +1,10 @@
 "use client";
 
-import { useState } from "react";
 import FormField from "@/components/FormField";
+import { ErrorBanner, SuccessBanner } from "@/components/ui/Status";
 import api from "@/lib/api";
 import { useAuth } from "@/lib/useAuth";
-import { ErrorBanner, SuccessBanner } from "@/components/ui/Status";
+import { useState } from "react";
 
 export default function SettingsPage() {
   const { user } = useAuth({ required: true });
@@ -30,7 +30,10 @@ export default function SettingsPage() {
 
     setSaving(true);
     try {
-      const { data } = await api.patch("/users/me", { name });
+      const { data } = await api.patch(
+        `${process.env.NEXT_PUBLIC_API_URL}/users/me`,
+        { name },
+      );
       localStorage.setItem("planora_user", JSON.stringify(data.data));
       setSuccess("Profile updated");
     } catch (err) {
@@ -43,13 +46,19 @@ export default function SettingsPage() {
   return (
     <div className="max-w-md">
       <p className="stamp text-xs text-coral">Settings</p>
-      <h1 className="mt-1 font-display text-3xl font-semibold text-ink">Profile</h1>
+      <h1 className="mt-1 font-display text-3xl font-semibold text-ink">
+        Profile
+      </h1>
 
       <form onSubmit={handleSubmit} className="mt-8 space-y-4" noValidate>
         <ErrorBanner message={error} />
         <SuccessBanner message={success} />
 
-        <FormField label="Full name" value={name} onChange={(e) => setName(e.target.value)} />
+        <FormField
+          label="Full name"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+        />
 
         <label className="block">
           <span className="text-sm font-medium text-ink">Email</span>
@@ -72,8 +81,8 @@ export default function SettingsPage() {
       <div className="mt-10 border-t border-ink/10 pt-6">
         <p className="stamp text-xs text-ink-soft">Notifications</p>
         <p className="mt-2 text-sm text-ink-soft">
-          Email notifications for invitations and approvals are on by default. Granular controls
-          are coming soon.
+          Email notifications for invitations and approvals are on by default.
+          Granular controls are coming soon.
         </p>
       </div>
     </div>

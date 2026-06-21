@@ -1,10 +1,15 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import Link from "next/link";
+import {
+  EmptyState,
+  ErrorBanner,
+  Loading,
+  SuccessBanner,
+} from "@/components/ui/Status";
 import api from "@/lib/api";
 import { useAdminGuard } from "@/lib/useAdminGuard";
-import { Loading, ErrorBanner, SuccessBanner, EmptyState } from "@/components/ui/Status";
+import Link from "next/link";
+import { useEffect, useState } from "react";
 
 export default function AdminEventsPage() {
   const { loading: guardLoading } = useAdminGuard();
@@ -19,7 +24,9 @@ export default function AdminEventsPage() {
     setLoading(true);
     setError("");
     try {
-      const { data } = await api.get("/users/admin/events");
+      const { data } = await api.get(
+        `${process.env.NEXT_PUBLIC_API_URL}/users/admin/events`,
+      );
       setEvents(data.data);
     } catch (err) {
       setError(err.response?.data?.message || "Couldn't load events.");
@@ -34,12 +41,15 @@ export default function AdminEventsPage() {
   }, [guardLoading]);
 
   async function handleDelete(id) {
-    if (!confirm("Remove this event from the platform? This cannot be undone.")) return;
+    if (!confirm("Remove this event from the platform? This cannot be undone."))
+      return;
     setBusyId(id);
     setError("");
     setSuccess("");
     try {
-      await api.delete(`/users/admin/events/${id}`);
+      await api.delete(
+        `${process.env.NEXT_PUBLIC_API_URL}/users/admin/events/${id}`,
+      );
       setSuccess("Event removed");
       await load();
     } catch (err) {
@@ -54,7 +64,9 @@ export default function AdminEventsPage() {
   return (
     <div>
       <p className="stamp text-xs text-coral">Admin</p>
-      <h1 className="mt-1 font-display text-3xl font-semibold text-ink">Manage events</h1>
+      <h1 className="mt-1 font-display text-3xl font-semibold text-ink">
+        Manage events
+      </h1>
 
       <div className="mt-8 space-y-3">
         <ErrorBanner message={error} />
@@ -72,13 +84,14 @@ export default function AdminEventsPage() {
             >
               <div>
                 <Link
-                  href={`/events/${event.id}`}
+                  href={`${process.env.NEXT_PUBLIC_API_URL}/events/${event.id}`}
                   className="text-sm font-medium text-ink hover:text-coral"
                 >
                   {event.title}
                 </Link>
                 <p className="text-xs text-ink-soft">
-                  {event.visibility} · {Number(event.fee) === 0 ? "Free" : `৳${event.fee}`} · hosted
+                  {event.visibility} ·{" "}
+                  {Number(event.fee) === 0 ? "Free" : `৳${event.fee}`} · hosted
                   by {event.owner?.name} ({event.owner?.email})
                 </p>
               </div>

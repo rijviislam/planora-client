@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
 import FormField from "@/components/FormField";
 import api from "@/lib/api";
+import { useState } from "react";
 
 const empty = {
   title: "",
@@ -53,13 +53,19 @@ export default function EventForm({ initial, onSaved, onCancel }) {
     setSaving(true);
     try {
       if (initial?.id) {
-        await api.patch(`/events/${initial.id}`, payload);
+        await api.patch(
+          `${process.env.NEXT_PUBLIC_API_URL}/events/${initial.id}`,
+          payload,
+        );
       } else {
-        await api.post("/events", payload);
+        await api.post(`${process.env.NEXT_PUBLIC_API_URL}/events`, payload);
       }
       onSaved();
     } catch (err) {
-      setServerError(err.response?.data?.message || "Couldn't save this event. Please try again.");
+      setServerError(
+        err.response?.data?.message ||
+          "Couldn't save this event. Please try again.",
+      );
     } finally {
       setSaving(false);
     }
@@ -68,7 +74,9 @@ export default function EventForm({ initial, onSaved, onCancel }) {
   return (
     <form onSubmit={handleSubmit} className="space-y-4" noValidate>
       {serverError && (
-        <div className="rounded-lg bg-coral/10 px-4 py-3 text-sm text-coral">{serverError}</div>
+        <div className="rounded-lg bg-coral/10 px-4 py-3 text-sm text-coral">
+          {serverError}
+        </div>
       )}
 
       <FormField
@@ -89,7 +97,9 @@ export default function EventForm({ initial, onSaved, onCancel }) {
           }`}
         />
         {errors.description && (
-          <span className="mt-1 block text-xs text-coral">{errors.description}</span>
+          <span className="mt-1 block text-xs text-coral">
+            {errors.description}
+          </span>
         )}
       </label>
 

@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { EmptyState, ErrorBanner, Loading } from "@/components/ui/Status";
 import api from "@/lib/api";
-import { Loading, ErrorBanner, EmptyState } from "@/components/ui/Status";
+import { useEffect, useState } from "react";
 
 function Stars({ value, onChange }) {
   return (
@@ -37,7 +37,9 @@ export default function ReviewsPage() {
     setLoading(true);
     setError("");
     try {
-      const { data } = await api.get("/reviews/mine");
+      const { data } = await api.get(
+        `${process.env.NEXT_PUBLIC_API_URL}/reviews/mine`,
+      );
       setReviews(data.data);
     } catch (err) {
       setError(err.response?.data?.message || "Couldn't load your reviews.");
@@ -60,12 +62,16 @@ export default function ReviewsPage() {
     setBusyId(id);
     setError("");
     try {
-      await api.patch(`/reviews/${id}`, draft);
+      await api.patch(
+        `${process.env.NEXT_PUBLIC_API_URL}/reviews/${id}`,
+        draft,
+      );
       setEditingId(null);
       await load();
     } catch (err) {
       setError(
-        err.response?.data?.message || "Couldn't save this review (the edit window may have passed)."
+        err.response?.data?.message ||
+          "Couldn't save this review (the edit window may have passed).",
       );
     } finally {
       setBusyId(null);
@@ -77,11 +83,12 @@ export default function ReviewsPage() {
     setBusyId(id);
     setError("");
     try {
-      await api.delete(`/reviews/${id}`);
+      await api.delete(`${process.env.NEXT_PUBLIC_API_URL}/reviews/${id}`);
       await load();
     } catch (err) {
       setError(
-        err.response?.data?.message || "Couldn't delete this review (the edit window may have passed)."
+        err.response?.data?.message ||
+          "Couldn't delete this review (the edit window may have passed).",
       );
     } finally {
       setBusyId(null);
@@ -91,7 +98,9 @@ export default function ReviewsPage() {
   return (
     <div>
       <p className="stamp text-xs text-coral">Reviews</p>
-      <h1 className="mt-1 font-display text-3xl font-semibold text-ink">My reviews</h1>
+      <h1 className="mt-1 font-display text-3xl font-semibold text-ink">
+        My reviews
+      </h1>
 
       <div className="mt-8 space-y-3">
         <ErrorBanner message={error} />
@@ -105,16 +114,26 @@ export default function ReviewsPage() {
           />
         ) : (
           reviews.map((review) => (
-            <div key={review.id} className="rounded-ticket border border-ink/10 bg-white p-5">
-              <p className="font-display text-lg font-semibold text-ink">{review.event?.title}</p>
+            <div
+              key={review.id}
+              className="rounded-ticket border border-ink/10 bg-white p-5"
+            >
+              <p className="font-display text-lg font-semibold text-ink">
+                {review.event?.title}
+              </p>
 
               {editingId === review.id ? (
                 <div className="mt-3 space-y-3">
-                  <Stars value={draft.rating} onChange={(n) => setDraft({ ...draft, rating: n })} />
+                  <Stars
+                    value={draft.rating}
+                    onChange={(n) => setDraft({ ...draft, rating: n })}
+                  />
                   <textarea
                     rows={3}
                     value={draft.comment}
-                    onChange={(e) => setDraft({ ...draft, comment: e.target.value })}
+                    onChange={(e) =>
+                      setDraft({ ...draft, comment: e.target.value })
+                    }
                     className="w-full rounded-lg border border-ink/15 bg-white px-4 py-2.5 text-sm text-ink outline-none focus:border-ink"
                   />
                   <div className="flex gap-2">
