@@ -47,7 +47,10 @@ export default function Hero({ event }) {
                 {event.description}
               </p>
               <p className="mt-4 text-sm text-ink-soft">
-                Hosted by <span className="font-medium text-ink">{event.owner?.name}</span>
+                Hosted by{" "}
+                <span className="font-medium text-ink">
+                  {event.owner?.name}
+                </span>
               </p>
             </div>
             <div className="ticket-stub-divider my-4" />
@@ -62,7 +65,7 @@ export default function Hero({ event }) {
                 {date?.getFullYear()}
               </p>
               <Link
-                href={`/events/${event.id}`}
+                href={`${process.env.NEXT_PUBLIC_API_URL}/events/${event.id}`}
                 className="stamp mt-4 rounded-full bg-coral px-3 py-1.5 text-[10px] font-semibold text-paper"
               >
                 Join
