@@ -1,12 +1,12 @@
 "use client";
 
-import { useState } from "react";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
-import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import FormField from "@/components/FormField";
+import Navbar from "@/components/Navbar";
 import api from "@/lib/api";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 export default function SignupPage() {
   const router = useRouter();
@@ -19,9 +19,11 @@ export default function SignupPage() {
     const next = {};
     if (!form.name.trim()) next.name = "Name is required";
     if (!form.email) next.email = "Email is required";
-    else if (!/^\S+@\S+\.\S+$/.test(form.email)) next.email = "Enter a valid email";
+    else if (!/^\S+@\S+\.\S+$/.test(form.email))
+      next.email = "Enter a valid email";
     if (!form.password) next.password = "Password is required";
-    else if (form.password.length < 6) next.password = "Use at least 6 characters";
+    else if (form.password.length < 6)
+      next.password = "Use at least 6 characters";
     setErrors(next);
     return Object.keys(next).length === 0;
   }
@@ -33,13 +35,18 @@ export default function SignupPage() {
 
     setLoading(true);
     try {
-      const { data } = await api.post("/auth/register", form);
+      const { data } = await api.post(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/auth/register`,
+        form,
+      );
+
       localStorage.setItem("planora_token", data.data.token);
       localStorage.setItem("planora_user", JSON.stringify(data.data.user));
       router.push("/dashboard");
     } catch (err) {
       setServerError(
-        err.response?.data?.message || "Something went wrong. Please try again."
+        err.response?.data?.message ||
+          "Something went wrong. Please try again.",
       );
     } finally {
       setLoading(false);
