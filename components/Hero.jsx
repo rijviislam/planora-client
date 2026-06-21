@@ -65,7 +65,7 @@ export default function Hero({ event }) {
                 {date?.getFullYear()}
               </p>
               <Link
-                href={`${process.env.NEXT_PUBLIC_API_URL}/events/${event.id}`}
+                href={`api/events/${event.id}`}
                 className="stamp mt-4 rounded-full bg-coral px-3 py-1.5 text-[10px] font-semibold text-paper"
               >
                 Join

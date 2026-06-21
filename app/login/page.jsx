@@ -33,7 +33,7 @@ export default function LoginPage() {
     setLoading(true);
     try {
       const { data } = await api.post(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/auth/login`,
+        `${process.env.NEXT_PUBLIC_API_URL}/auth/login`,
         form,
       );
       localStorage.setItem("planora_token", data.data.token);

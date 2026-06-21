@@ -1,5 +1,4 @@
 import Link from "next/link";
-const baseURL = process.env.NEXT_PUBLIC_API_URL?.replace(/\/$/, "");
 
 function FeeBadge({ fee }) {
   const isFree = Number(fee) === 0;
@@ -26,7 +25,7 @@ export default function EventsSlider({ events = [] }) {
             </h2>
           </div>
           <Link
-            href={`${baseURL}/api/events`}
+            href={`${process.env.NEXT_PUBLIC_API_URL}/events`}
             className="hidden text-sm font-medium text-ink-soft hover:text-ink md:block"
           >
             View all →
@@ -42,7 +41,7 @@ export default function EventsSlider({ events = [] }) {
             return (
               <Link
                 key={event.id}
-                href={`${process.env.NEXT_PUBLIC_API_URL}/api/events/${event.id}`}
+                href={`${process.env.NEXT_PUBLIC_API_URL}/events/${event.id}`}
                 className="ticket flex w-72 shrink-0 flex-col"
               >
                 <div className="flex-1 p-5">

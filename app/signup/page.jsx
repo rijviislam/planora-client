@@ -36,7 +36,7 @@ export default function SignupPage() {
     setLoading(true);
     try {
       const { data } = await api.post(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/auth/register`,
+        `${process.env.NEXT_PUBLIC_API_URL}/auth/register`,
         form,
       );
 
