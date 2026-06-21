@@ -5,18 +5,18 @@ import Footer from "@/components/Footer";
 import Hero from "@/components/Hero";
 import Navbar from "@/components/Navbar";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5001/api";
 
-async function getFeaturedEvent() {
+async function getFeaturedEvents() {
   try {
     const res = await fetch(`${API_URL}/events/featured`, {
       cache: "no-store",
     });
-    if (!res.ok) return null;
+    if (!res.ok) return [];
     const json = await res.json();
     return json.data;
   } catch {
-    return null;
+    return [];
   }
 }
 
@@ -34,8 +34,8 @@ async function getUpcomingEvents() {
 }
 
 export default async function HomePage() {
-  const [featured, events] = await Promise.all([
-    getFeaturedEvent(),
+  const [featuredEvents, events] = await Promise.all([
+    getFeaturedEvents(),
     getUpcomingEvents(),
   ]);
 
@@ -43,7 +43,7 @@ export default async function HomePage() {
     <>
       <Navbar />
       <main>
-        <Hero event={featured} />
+        <Hero events={featuredEvents} />
         <EventsSlider events={events} />
         <Categories />
         <CTA />
