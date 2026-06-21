@@ -45,7 +45,7 @@ export default function EventsPage() {
   const [category, setCategory] = useState("ALL");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-
+  const baseURL = process.env.NEXT_PUBLIC_API_URL?.replace(/\/$/, "");
   useEffect(() => {
     let active = true;
     setLoading(true);
@@ -53,8 +53,9 @@ export default function EventsPage() {
 
     const { visibility, feeType } = categories.find((c) => c.key === category);
 
+    api;
     api
-      .get(`${process.env.NEXT_PUBLIC_API_URL}/events`, {
+      .get(`${baseURL}/api/events`, {
         params: { search, visibility, feeType, limit: 12 },
       })
       .then(({ data }) => {
