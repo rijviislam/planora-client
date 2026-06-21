@@ -9,7 +9,7 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
 
 async function getFeaturedEvent() {
   try {
-    const res = await fetch(`${API_URL}/api/events/featured`, {
+    const res = await fetch(`${API_URL}/events/featured`, {
       cache: "no-store",
     });
     if (!res.ok) return null;
@@ -22,7 +22,7 @@ async function getFeaturedEvent() {
 
 async function getUpcomingEvents() {
   try {
-    const res = await fetch(`${API_URL}/api/events?limit=9`, {
+    const res = await fetch(`${API_URL}/events?limit=9`, {
       cache: "no-store",
     });
     if (!res.ok) return [];

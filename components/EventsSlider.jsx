@@ -25,7 +25,7 @@ export default function EventsSlider({ events = [] }) {
             </h2>
           </div>
           <Link
-            href={`${process.env.NEXT_PUBLIC_API_URL}/events`}
+            href={`/events`}
             className="hidden text-sm font-medium text-ink-soft hover:text-ink md:block"
           >
             View all →
@@ -41,7 +41,7 @@ export default function EventsSlider({ events = [] }) {
             return (
               <Link
                 key={event.id}
-                href={`${process.env.NEXT_PUBLIC_API_URL}/events/${event.id}`}
+                href={`/events/${event.id}`}
                 className="ticket flex w-72 shrink-0 flex-col"
               >
                 <div className="flex-1 p-5">

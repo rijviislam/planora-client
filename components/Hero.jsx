@@ -1,7 +1,12 @@
+"use client";
+
+import { useAuth } from "@/lib/useAuth";
 import Link from "next/link";
 
 export default function Hero({ event }) {
+  const { user } = useAuth();
   const date = event ? new Date(event.date) : null;
+  const hostHref = user ? "/dashboard/my-events" : "/signup";
 
   return (
     <section className="mx-auto max-w-6xl px-5 pb-16 pt-12 md:px-8 md:pb-24 md:pt-20">
@@ -28,7 +33,7 @@ export default function Hero({ event }) {
               Browse events
             </Link>
             <Link
-              href="/signup"
+              href={hostHref}
               className="rounded-full border border-ink/20 px-6 py-3 text-sm font-medium text-ink transition hover:border-ink"
             >
               Host your own
@@ -65,7 +70,7 @@ export default function Hero({ event }) {
                 {date?.getFullYear()}
               </p>
               <Link
-                href={`api/events/${event.id}`}
+                href={`/events/${event.id}`}
                 className="stamp mt-4 rounded-full bg-coral px-3 py-1.5 text-[10px] font-semibold text-paper"
               >
                 Join
