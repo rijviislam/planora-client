@@ -42,7 +42,7 @@ export default function EventsSlider({ events = [] }) {
             return (
               <Link
                 key={event.id}
-                href={`${process.env.NEXT_PUBLIC_API_URL}/events/${event.id}`}
+                href={`${process.env.NEXT_PUBLIC_API_URL}/api/events/${event.id}`}
                 className="ticket flex w-72 shrink-0 flex-col"
               >
                 <div className="flex-1 p-5">
