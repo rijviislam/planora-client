@@ -32,10 +32,7 @@ export default function LoginPage() {
 
     setLoading(true);
     try {
-      const { data } = await api.post(
-        `${process.env.NEXT_PUBLIC_API_URL}/auth/login`,
-        form,
-      );
+      const { data } = await api.post("/auth/login", form);
       localStorage.setItem("planora_token", data.data.token);
       localStorage.setItem("planora_user", JSON.stringify(data.data.user));
       router.push("/dashboard");
