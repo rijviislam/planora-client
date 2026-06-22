@@ -64,7 +64,6 @@ export default function EventDetailsPage() {
 
   useEffect(() => {
     if (id) load();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 
   async function handlePrimaryAction() {

@@ -18,16 +18,42 @@ export default function Footer() {
           <div>
             <p className="stamp text-xs text-paper/40">Company</p>
             <ul className="mt-3 space-y-2 text-sm">
-              <li><Link href="/about" className="text-paper/80 hover:text-coral">About</Link></li>
-              <li><Link href="/contact" className="text-paper/80 hover:text-coral">Contact</Link></li>
-              <li><Link href="/privacy" className="text-paper/80 hover:text-coral">Privacy Policy</Link></li>
+              <li>
+                <Link href="/about" className="text-paper/80 hover:text-coral">
+                  About
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/contact"
+                  className="text-paper/80 hover:text-coral"
+                >
+                  Contact
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/privacy"
+                  className="text-paper/80 hover:text-coral"
+                >
+                  Privacy Policy
+                </Link>
+              </li>
             </ul>
           </div>
           <div>
             <p className="stamp text-xs text-paper/40">Explore</p>
             <ul className="mt-3 space-y-2 text-sm">
-              <li><Link href="/events" className="text-paper/80 hover:text-coral">Browse events</Link></li>
-              <li><Link href="/signup" className="text-paper/80 hover:text-coral">Create an event</Link></li>
+              <li>
+                <Link href="/events" className="text-paper/80 hover:text-coral">
+                  Browse events
+                </Link>
+              </li>
+              <li>
+                <Link href="/signup" className="text-paper/80 hover:text-coral">
+                  Create an event
+                </Link>
+              </li>
             </ul>
           </div>
         </div>

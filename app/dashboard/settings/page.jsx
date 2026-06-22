@@ -13,7 +13,6 @@ export default function SettingsPage() {
   const [success, setSuccess] = useState("");
   const [saving, setSaving] = useState(false);
 
-  // user may not be loaded yet on first paint; sync once available
   if (user && name === "" && user.name) {
     setName(user.name);
   }

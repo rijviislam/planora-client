@@ -35,7 +35,6 @@ export default function AdminEventsPage() {
 
   useEffect(() => {
     if (!guardLoading) load();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [guardLoading]);
 
   async function handleDelete(id) {

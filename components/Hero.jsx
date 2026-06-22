@@ -1,31 +1,84 @@
 "use client";
 
 import { useAuth } from "@/lib/useAuth";
+import "keen-slider/keen-slider.min.css";
+import { useKeenSlider } from "keen-slider/react";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+
+const Z_DISTANCE = 250;
+
+function carouselPlugin(slider) {
+  function rotate() {
+    const deg = 360 * slider.track.details.progress;
+    slider.container.style.transform = `translateZ(-${Z_DISTANCE}px) rotateY(${-deg}deg)`;
+  }
+
+  slider.on("created", () => {
+    const deg = 360 / slider.slides.length;
+    slider.slides.forEach((el, idx) => {
+      el.style.transform = `rotateY(${deg * idx}deg) translateZ(${Z_DISTANCE}px)`;
+    });
+    rotate();
+  });
+
+  slider.on("detailsChanged", rotate);
+}
+
+function autoplayPlugin(slider) {
+  let timeout;
+  let mouseOver = false;
+
+  function clearNextTimeout() {
+    clearTimeout(timeout);
+  }
+
+  function nextTimeout() {
+    clearTimeout(timeout);
+
+    if (mouseOver) return;
+
+    timeout = setTimeout(() => {
+      slider.next();
+    }, 2000);
+  }
+
+  slider.on("created", () => {
+    slider.container.addEventListener("mouseover", () => {
+      mouseOver = true;
+      clearNextTimeout();
+    });
+
+    slider.container.addEventListener("mouseout", () => {
+      mouseOver = false;
+      nextTimeout();
+    });
+
+    nextTimeout();
+  });
+
+  slider.on("dragStarted", clearNextTimeout);
+  slider.on("animationEnded", nextTimeout);
+  slider.on("updated", nextTimeout);
+}
 
 export default function Hero({ events = [] }) {
   const { user } = useAuth();
   const hostHref = user ? "/dashboard/my-events" : "/signup";
 
-  const [index, setIndex] = useState(0);
-  const hasMultiple = events.length > 1;
-  const event = events[index] || null;
-  const date = event ? new Date(event.date) : null;
-
-  // Auto-rotate every 6s when there's more than one featured event
-  useEffect(() => {
-    if (!hasMultiple) return;
-    const timer = setInterval(() => {
-      setIndex((i) => (i + 1) % events.length);
-    }, 6000);
-    return () => clearInterval(timer);
-  }, [hasMultiple, events.length]);
-
-  function goTo(i) {
-    setIndex(((i % events.length) + events.length) % events.length);
-  }
-
+  const [sliderRef] = useKeenSlider(
+    {
+      loop: true,
+      selector: ".carousel__cell",
+      renderMode: "custom",
+      mode: "snap",
+      drag: true,
+      defaultAnimation: {
+        duration: 2500,
+        easing: (t) => 1 - Math.pow(1 - t, 3),
+      },
+    },
+    events.length > 1 ? [carouselPlugin, autoplayPlugin] : [],
+  );
   return (
     <section className="mx-auto max-w-6xl px-5 pb-16 pt-12 md:px-8 md:pb-24 md:pt-20">
       <div className="grid items-center gap-12 md:grid-cols-2">
@@ -60,85 +113,95 @@ export default function Hero({ events = [] }) {
         </div>
 
         <div>
-          {event ? (
-            <div className="ticket flex shadow-[0_20px_50px_-20px_rgba(27,31,59,0.25)]">
-              <div className="flex-1 p-6 md:p-8">
-                <div className="flex items-center justify-between gap-2">
-                  <p className="stamp text-xs text-coral">Featured event</p>
-                  {hasMultiple && (
-                    <div className="flex items-center gap-1">
-                      <button
-                        type="button"
-                        aria-label="Previous featured event"
-                        onClick={() => goTo(index - 1)}
-                        className="flex h-6 w-6 items-center justify-center rounded-full text-ink-soft transition hover:bg-ink/5 hover:text-ink"
-                      >
-                        ‹
-                      </button>
-                      <button
-                        type="button"
-                        aria-label="Next featured event"
-                        onClick={() => goTo(index + 1)}
-                        className="flex h-6 w-6 items-center justify-center rounded-full text-ink-soft transition hover:bg-ink/5 hover:text-ink"
-                      >
-                        ›
-                      </button>
-                    </div>
-                  )}
-                </div>
-                <h3 className="mt-3 font-display text-2xl font-semibold text-ink md:text-3xl">
-                  {event.title}
-                </h3>
-                <p className="mt-3 line-clamp-3 text-sm text-ink-soft">
-                  {event.description}
-                </p>
-                <p className="mt-4 text-sm text-ink-soft">
-                  Hosted by{" "}
-                  <span className="font-medium text-ink">
-                    {event.owner?.name}
-                  </span>
-                </p>
-              </div>
-              <div className="ticket-stub-divider my-4" />
-              <div className="flex w-32 shrink-0 flex-col items-center justify-center gap-1 p-4 text-center md:w-36">
-                <p className="stamp text-[10px] text-ink-soft">
-                  {date?.toLocaleDateString("en-US", { month: "short" })}
-                </p>
-                <p className="font-display text-4xl font-semibold text-ink">
-                  {date?.getDate()}
-                </p>
-                <p className="stamp text-[10px] text-ink-soft">
-                  {date?.getFullYear()}
-                </p>
-                <Link
-                  href={`/events/${event.id}`}
-                  className="stamp mt-4 rounded-full bg-coral px-3 py-1.5 text-[10px] font-semibold text-paper"
-                >
-                  Join
-                </Link>
-              </div>
-            </div>
-          ) : (
+          {events.length === 0 ? (
             <div className="ticket flex h-64 items-center justify-center p-8 text-center">
               <p className="text-sm text-ink-soft">
                 No featured event yet — check back soon.
               </p>
             </div>
-          )}
+          ) : (
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+              }}
+            >
+              <div
+                style={{
+                  width: 420,
+                  height: 200,
+                  perspective: 1000,
+                  position: "relative",
+                }}
+              >
+                <div
+                  ref={sliderRef}
+                  className="carousel keen-slider"
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    position: "absolute",
+                    overflow: "visible",
+                    transformStyle: "preserve-3d",
+                    transform: `translateZ(-${Z_DISTANCE}px)`,
+                  }}
+                >
+                  {events.map((event) => {
+                    const date = new Date(event.date);
+                    return (
+                      <div
+                        key={event.id}
+                        className="carousel__cell ticket flex"
+                        style={{
+                          position: "absolute",
+                          width: 400,
+                          left: 10,
+                          height: 200,
+                        }}
+                      >
+                        <div className="flex-1 p-5">
+                          <p className="stamp text-xs text-coral">
+                            Featured event
+                          </p>
+                          <h3 className="mt-2 font-display text-xl font-semibold text-ink">
+                            {event.title}
+                          </h3>
+                          <p className="mt-2 line-clamp-2 text-xs text-ink-soft">
+                            {event.description}
+                          </p>
+                          <p className="mt-3 text-xs text-ink-soft">
+                            Hosted by{" "}
+                            <span className="font-medium text-ink">
+                              {event.owner?.name}
+                            </span>
+                          </p>
+                        </div>
 
-          {hasMultiple && (
-            <div className="mt-4 flex justify-center gap-1.5">
-              {events.map((e, i) => (
-                <button
-                  key={e.id}
-                  type="button"
-                  aria-label={`Show featured event ${i + 1}`}
-                  onClick={() => goTo(i)}
-                  className={`h-1.5 rounded-full transition-all ${
-                    i === index ? "w-6 bg-coral" : "w-1.5 bg-ink/15"
-                  }`}
-                />
-              ))}
+                        <div className="ticket-stub-divider my-3" />
+                        <div className="flex w-28 shrink-0 flex-col items-center justify-center gap-1 p-3 text-center">
+                          <p className="stamp text-[10px] text-ink-soft">
+                            {date.toLocaleDateString("en-US", {
+                              month: "short",
+                            })}
+                          </p>
+                          <p className="font-display text-3xl font-semibold text-ink">
+                            {date.getDate()}
+                          </p>
+                          <p className="stamp text-[10px] text-ink-soft">
+                            {date.getFullYear()}
+                          </p>
+                          <Link
+                            href={`/events/${event.id}`}
+                            className="stamp mt-3 rounded-full bg-coral px-3 py-1 text-[10px] font-semibold text-paper"
+                          >
+                            Join
+                          </Link>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
             </div>
           )}
         </div>
