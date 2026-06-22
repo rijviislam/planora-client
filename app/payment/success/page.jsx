@@ -1,6 +1,6 @@
-import Link from "next/link";
-import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import Navbar from "@/components/Navbar";
+import Link from "next/link";
 
 export default function PaymentSuccessPage() {
   return (
@@ -10,10 +10,13 @@ export default function PaymentSuccessPage() {
         <span className="stamp rounded-full bg-moss/10 px-3 py-1 text-xs font-semibold text-moss">
           Payment received
         </span>
-        <h1 className="mt-4 font-display text-3xl font-semibold text-ink">You're almost in</h1>
+        <h1 className="mt-4 font-display text-3xl font-semibold text-ink">
+          You're almost in
+        </h1>
         <p className="mt-3 text-sm text-ink-soft">
-          Your payment went through. The host now needs to approve your request — check your
-          dashboard for updates.
+          Your payment went through. The host now needs to approve your request{" "}
+          <br />
+          check your dashboard for updates.
         </p>
         <Link
           href="/dashboard/invitations"
