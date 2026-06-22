@@ -34,7 +34,6 @@ export default function ParticipantsPanel({ eventId }) {
 
   useEffect(() => {
     load();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [eventId]);
 
   async function act(id, action) {

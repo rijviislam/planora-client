@@ -36,7 +36,6 @@ export default function AdminUsersPage() {
 
   useEffect(() => {
     if (!guardLoading) load();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [guardLoading]);
 
   async function handleBan(id) {

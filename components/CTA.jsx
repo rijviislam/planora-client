@@ -1,6 +1,10 @@
+"use client";
+import { useAuth } from "@/lib/useAuth";
 import Link from "next/link";
 
 export default function CTA() {
+  const { user } = useAuth();
+  const createAnEvent = user ? "/dashboard/my-events" : "/signup";
   return (
     <section className="bg-ink">
       <div className="mx-auto flex max-w-6xl flex-col items-start gap-6 px-5 py-16 md:flex-row md:items-center md:justify-between md:px-8 md:py-20">
@@ -16,7 +20,7 @@ export default function CTA() {
         </div>
         <div className="flex shrink-0 gap-3">
           <Link
-            href="/signup"
+            href={createAnEvent}
             className="rounded-full bg-coral px-6 py-3 text-sm font-medium text-paper transition hover:bg-paper hover:text-ink"
           >
             Create an event

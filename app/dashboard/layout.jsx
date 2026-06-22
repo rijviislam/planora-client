@@ -19,14 +19,16 @@ export default function DashboardLayout({ children }) {
     );
   }
 
-  if (!user) return null; // redirect already in flight
+  if (!user) return null;
 
   return (
     <>
       <Navbar />
       <div className="mx-auto flex max-w-6xl flex-col md:flex-row">
         <Sidebar user={user} onLogout={logout} />
-        <main className="min-w-0 flex-1 px-5 py-8 md:px-8 md:py-10">{children}</main>
+        <main className="min-w-0 flex-1 px-5 py-8 md:px-8 md:py-10">
+          {children}
+        </main>
       </div>
     </>
   );
